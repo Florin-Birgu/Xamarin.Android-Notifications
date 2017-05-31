@@ -11,8 +11,6 @@ namespace Notifications
     [Activity(Label = "Notifications", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
-        int count = 1;
-
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -20,11 +18,14 @@ namespace Notifications
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.MyButton);
+            Intent alarmIntent = new Intent(this, typeof(AlarmReceiver));
+            PendingIntent pending = PendingIntent.GetBroadcast(this, 0, alarmIntent, PendingIntentFlags.UpdateCurrent);
+            AlarmManager alarmManager = GetSystemService(AlarmService).JavaCast<AlarmManager>();
+            PendingIntent pendingIntent;
 
-            button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
+            alarmManager.SetRepeating(AlarmType.RtcWakeup, BootReceiver.FirstReminder(), BootReceiver.reminderInterval, pending);
+            pendingIntent = PendingIntent.GetBroadcast(this, 0, alarmIntent, 0);
+
         }
     }
 }
