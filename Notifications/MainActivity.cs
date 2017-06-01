@@ -15,16 +15,15 @@ namespace Notifications
         {
             base.OnCreate(bundle);
 
-            // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
             Intent alarmIntent = new Intent(this, typeof(AlarmReceiver));
             PendingIntent pending = PendingIntent.GetBroadcast(this, 0, alarmIntent, PendingIntentFlags.UpdateCurrent);
             AlarmManager alarmManager = GetSystemService(AlarmService).JavaCast<AlarmManager>();
-            PendingIntent pendingIntent;
 
+            //AlarmType.RtcWakeup – it will fire up the pending intent at a specified time, waking up the device
             alarmManager.SetRepeating(AlarmType.RtcWakeup, BootReceiver.FirstReminder(), BootReceiver.reminderInterval, pending);
-            pendingIntent = PendingIntent.GetBroadcast(this, 0, alarmIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.GetBroadcast(this, 0, alarmIntent, 0);
 
         }
     }

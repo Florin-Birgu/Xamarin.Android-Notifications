@@ -8,35 +8,32 @@ namespace Notifications
     {
         public override void OnReceive(Context context, Intent intent)
         {
-            //var message = intent.GetStringExtra("message");
-            //var title = intent.GetStringExtra("title");
+            var title = "Hello world!";
+            var message = "Checkout this notification";
+
+            Intent backIntent = new Intent(context, typeof(MainActivity));
+            backIntent.SetFlags(ActivityFlags.NewTask);
             
-                var title = "Hello world!";
-                var message = "Checkout the lates posts";
+            //The activity opened when we click the notification is SecondActivity
+            //Feel free to change it to you own activity
+            var resultIntent = new Intent(context, typeof(SecondActivity));
 
-                Intent backIntent = new Intent(context, typeof(MainActivity));
-                backIntent.SetFlags(ActivityFlags.NewTask);
+            PendingIntent pending = PendingIntent.GetActivities(context, 0,
+                new Intent[] { backIntent, resultIntent },
+                PendingIntentFlags.OneShot);
 
-                var resultIntent = new Intent(context, typeof(SecondActivity));
+            var builder =
+                new Notification.Builder(context)
+                    .SetContentTitle(title)
+                    .SetContentText(message)
+                    .SetAutoCancel(true)
+                    .SetSmallIcon(Resource.Drawable.Icon)
+                    .SetDefaults(NotificationDefaults.All);
 
-                PendingIntent pending = PendingIntent.GetActivities(context, 0,
-                    new Intent[] { backIntent, resultIntent },
-                    PendingIntentFlags.OneShot);
-
-                var builder =
-                    new Notification.Builder(context)
-                        .SetContentTitle(title)
-                        .SetContentText(message)
-                        .SetAutoCancel(true)
-                        .SetSmallIcon(Resource.Drawable.Icon)
-                        .SetDefaults(NotificationDefaults.All);
-
-                builder.SetContentIntent(pending);
-
-                var notification = builder.Build();
-
-                var manager = NotificationManager.FromContext(context);
-                manager.Notify(1331, notification);
+            builder.SetContentIntent(pending);
+            var notification = builder.Build();
+            var manager = NotificationManager.FromContext(context);
+            manager.Notify(1331, notification);
 
         }
     }
